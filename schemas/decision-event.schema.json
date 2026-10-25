@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "simple-eng decision event",
+  "description": "One line of decision-log/events.jsonl. `simple-eng validate` enforces these fields plus event order and authority rules: approved/rejected events must come from the approval hook (source user-prompt-hook, attestation 'UserPromptExpansion;session=<id>;prompt-sha256=<hex>'); implemented/verified events need an attestation.",
+  "type": "object",
+  "required": ["event_id", "decision_id", "event", "timestamp", "actor", "source"],
+  "properties": {
+    "event_id": { "type": "string", "pattern": "^EVT-[0-9a-f]{32}$" },
+    "decision_id": { "type": "string", "pattern": "^DEC-[0-9]{4,}$" },
+    "event": { "enum": ["proposed", "evaluated", "deferred", "approved", "rejected", "implemented", "verified", "superseded"] },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "actor": { "type": "string", "minLength": 1 },
+    "source": { "type": "string", "minLength": 1, "examples": ["simple-eng-cli", "user-prompt-hook"] },
+    "title": { "type": "string" },
+    "summary": { "type": "string" },
+    "evidence_ids": { "type": "array", "items": { "type": "string", "pattern": "^EVD-[0-9]{4,}$" } },
+    "attestation": { "type": "string" },
+    "superseded_by": { "type": "string", "pattern": "^DEC-[0-9]{4,}$" }
+  },
+  "additionalProperties": false
+}

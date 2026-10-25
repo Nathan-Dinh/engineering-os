@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "description": "Facts simple-eng needs from any project. `simple-eng status` reports which are recorded. A project can point an area at an existing file in .simple-eng/config.json.",
+  "areas": [
+    {
+      "id": "problem-users",
+      "question": "What problem is being solved, for whom, and what outcome counts as success?",
+      "record": "docs/PROJECT.md#Problem and users",
+      "template": "project.md",
+      "source": "ask",
+      "applies_when": null
+    },
+    {
+      "id": "scope",
+      "question": "What is in the current scope or MVP, and what is explicitly out of scope?",
+      "record": "docs/PROJECT.md#Scope",
+      "template": "project.md",
+      "source": "ask",
+      "applies_when": null
+    },
+    {
+      "id": "constraints",
+      "question": "Which budget, timeline, team, legal, privacy, hosting, or integration constraints apply?",
+      "record": "docs/PROJECT.md#Constraints",
+      "template": "project.md",
+      "source": "ask",
+      "applies_when": null
+    },
+    {
+      "id": "decision-owners",
+      "question": "Who may approve consequential decisions (architecture, security, sensitive data, cost, destructive actions)?",
+      "record": "docs/PROJECT.md#Decision owners",
+      "template": "project.md",
+      "source": "ask",
+      "applies_when": null
+    },
+    {
+      "id": "stack",
+      "question": "Which languages, frameworks, data stores, and major dependencies does the project use?",
+      "record": "docs/PROJECT.md#Stack",
+      "template": "project.md",
+      "source": "investigate",
+      "applies_when": null
+    },
+    {
+      "id": "commands",
+      "question": "How is the project built, tested, linted, and run locally?",
+      "record": "docs/PROJECT.md#Commands",
+      "template": "project.md",
+      "source": "investigate",
+      "applies_when": null
+    },
+    {
+      "id": "environments",
+      "question": "Where does the project run (environments, CI, deployment), and who operates it?",
+      "record": "docs/PROJECT.md#Environments",
+      "template": "project.md",
+      "source": "investigate",
+      "applies_when": null
+    },
+    {
+      "id": "requirements",
+      "question": "What are the important functional and non-functional requirements, with measurable acceptance?",
+      "record": "docs/product/requirements.md#Requirements",
+      "template": "requirements.md",
+      "source": "ask",
+      "applies_when": null
+    },
+    {
+      "id": "quality-priorities",
+      "question": "Which quality attributes matter most, how were they ranked, and which measurable targets apply?",
+      "record": "docs/architecture/quality-attributes.md#Priorities",
+      "template": "quality-scenarios.md",
+      "source": "ask",
+      "applies_when": null
+    },
+    {
+      "id": "architecture",
+      "question": "What are the system's runtime units, responsibilities, boundaries, and key data flows?",
+      "record": "docs/architecture/overview.md#Containers and responsibilities",
+      "template": "architecture.md",
+      "source": "investigate",
+      "applies_when": null
+    },
+    {
+      "id": "data-model",
+      "question": "Which entities, ownership, tenancy, retention, and migration rules govern persistent data?",
+      "record": "docs/database/design.md#Entities and cardinality",
+      "template": "database.md",
+      "source": "investigate",
+      "applies_when": "the project stores persistent data"
+    },
+    {
+      "id": "ui",
+      "question": "Who uses the interface, what are the primary journeys, and which accessibility target applies?",
+      "record": "docs/design/notes.md#Users and primary journeys",
+      "template": "design-notes.md",
+      "source": "investigate",
+      "applies_when": "the project has a user interface"
+    }
+  ]
+}

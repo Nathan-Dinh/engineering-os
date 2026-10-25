@@ -1,0 +1,14 @@
+{
+  "name": "simple-eng",
+  "owner": {
+    "name": "Nathan Dinh"
+  },
+  "description": "Marketplace for the simple-eng Claude Code plugin.",
+  "plugins": [
+    {
+      "name": "simple-eng",
+      "source": "./",
+      "description": "Engineering lifecycle workflows with durable project state, typed approvals, and evidence tracking."
+    }
+  ]
+}
