@@ -11,7 +11,7 @@ Establish the user problem, actors, expected behavior, success measure, edge cas
 
 ## 2. Specify
 
-For a substantial feature, write a short spec at `docs/features/FEAT-####.md` from `${CLAUDE_PLUGIN_ROOT}/templates/feature.md`: problem, scope and out-of-scope, stories, requirements with observable acceptance criteria, dependencies, affected components and data, relevant quality attributes, and open questions. A small change needs no document. Resolve conflicting requirements or acceptance criteria with the user; do not invent a target, business rule, or permission. When the feature design is consequential, assess checkpoint E.
+For a substantial feature, write a short spec at `docs/features/FEAT-####.md` from `${CLAUDE_PLUGIN_ROOT}/reference/templates/feature.md`: problem, scope and out-of-scope, stories, requirements with observable acceptance criteria, dependencies, affected components and data, relevant quality attributes, and open questions. A small change needs no document. Resolve conflicting requirements or acceptance criteria with the user; do not invent a target, business rule, or permission. When the feature design is consequential, assess checkpoint E.
 
 ## 3. Design
 

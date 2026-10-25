@@ -20,7 +20,7 @@ A checkpoint makes a consequential step traceable; it is not ceremony for minor 
 ## At each checkpoint
 
 1. State the question being decided and its decision owner (`docs/PROJECT.md#Decision owners`).
-2. Summarize the evidence and its limits. Assess readiness separately from authorization (`${CLAUDE_PLUGIN_ROOT}/policies/decisions.md`).
+2. Summarize the evidence and its limits. Assess readiness separately from authorization (`${CLAUDE_PLUGIN_ROOT}/reference/policies/decisions.md`).
 3. Identify conflicts, unknowns, options, and consequences.
 4. For a consequential decision, propose a DEC and ask the owner to type `/simple-eng:approve DEC-####`. The owner may approve, ask for alternatives, or defer.
 5. Record the outcome in the "Checkpoints" table in `docs/STATE.md` with a link to the evidence or DEC, plus the next action. A completed checklist or a recommendation is not approval.

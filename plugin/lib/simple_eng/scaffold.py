@@ -14,7 +14,7 @@ BLOCK = re.compile(r'<!-- simple-eng:start[^>]*-->.*?<!-- simple-eng:end -->', r
 
 
 def claude_md_block(plugin_root=PLUGIN_ROOT):
-    body = (Path(plugin_root) / 'templates/claude-md-block.md').read_text(encoding='utf-8').strip()
+    body = (Path(plugin_root) / 'reference/templates/claude-md-block.md').read_text(encoding='utf-8').strip()
     return f'{START.format(version=plugin_version(plugin_root))}\n{body}\n{END}'
 
 
@@ -50,7 +50,7 @@ def planned_changes(root, plugin_root=PLUGIN_ROOT):
     plan('CLAUDE.md', _with_block(claude.read_text(encoding='utf-8') if claude.is_file() else None, claude_md_block(plugin_root)))
     for rel, template in ((PROJECT, 'project.md'), (STATE, 'state.md')):
         if not (root / rel).exists():
-            plan(rel, (Path(plugin_root) / 'templates' / template).read_text(encoding='utf-8'))
+            plan(rel, (Path(plugin_root) / 'reference' / 'templates' / template).read_text(encoding='utf-8'))
     return changes
 
 

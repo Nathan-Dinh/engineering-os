@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "simple-eng",
-      "source": "./",
+      "source": "./plugin",
       "description": "Engineering lifecycle workflows with durable project state, typed approvals, and evidence tracking."
     }
   ]

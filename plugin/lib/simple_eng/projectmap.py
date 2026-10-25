@@ -13,7 +13,7 @@ PRESENT, MISSING, NOT_APPLICABLE, BROKEN = 'present', 'missing', 'not applicable
 
 
 def load_map(plugin_root=PLUGIN_ROOT):
-    data = json.loads((Path(plugin_root) / 'project-map.json').read_text(encoding='utf-8'))
+    data = json.loads((Path(plugin_root) / 'reference/project-map.json').read_text(encoding='utf-8'))
     return data['areas']
 
 

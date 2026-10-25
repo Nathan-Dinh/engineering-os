@@ -13,7 +13,7 @@ Run safe, focused checks when useful (for example the test suite, if it is cheap
 
 ## Findings and questions
 
-Summarize verified facts with paths. Keep user-provided context, inferences, proposed improvements, and unknowns apart (labels in `${CLAUDE_PLUGIN_ROOT}/policies/evidence.md`). Identify existing conventions and accepted decisions; never invent the history behind them.
+Summarize verified facts with paths. Keep user-provided context, inferences, proposed improvements, and unknowns apart (labels in `${CLAUDE_PLUGIN_ROOT}/reference/policies/evidence.md`). Identify existing conventions and accepted decisions; never invent the history behind them.
 
 Treat contradictions between docs and code as drift candidates, not proof of intent. Before treating either one as authoritative, ask when the difference is consequential.
 

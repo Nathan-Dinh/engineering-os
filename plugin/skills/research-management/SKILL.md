@@ -13,7 +13,7 @@ Check each source's relevance, publication or update date, version, scope, autho
 
 ## Record
 
-For claims that a decision depends on, create evidence with `simple-eng add-evidence --claim ... --classification ... --source <url>` (see `${CLAUDE_PLUGIN_ROOT}/policies/evidence.md`). For references likely to be reused, add a note under `docs/resources/` from `${CLAUDE_PLUGIN_ROOT}/templates/research-reference.md`. Never claim a page was read or checked if it was not, and never store credentials.
+For claims that a decision depends on, create evidence with `simple-eng add-evidence --claim ... --classification ... --source <url>` (see `${CLAUDE_PLUGIN_ROOT}/reference/policies/evidence.md`). For references likely to be reused, add a note under `docs/resources/` from `${CLAUDE_PLUGIN_ROOT}/reference/templates/research-reference.md`. Never claim a page was read or checked if it was not, and never store credentials.
 
 A reference is not approval and does not by itself make a technology suitable. Mark references stale when a later decision depends on time-sensitive facts.
 

@@ -22,7 +22,7 @@ class ProjectMapTests(ProjectCase):
         self.assertEqual(statuses(self.root)[0]['stack'], 'present')
 
     def test_placeholder_only_content_is_missing(self):
-        template = (projectmap.PLUGIN_ROOT / 'templates/requirements.md').read_text()
+        template = (projectmap.PLUGIN_ROOT / 'reference/templates/requirements.md').read_text()
         self.write('docs/product/requirements.md', template)
         self.assertEqual(statuses(self.root)[0]['requirements'], 'missing')
         self.write('docs/product/requirements.md', template.replace(

@@ -17,7 +17,7 @@ Events go in `decision-log/events.jsonl`, in this order:
 - `implemented` and `verified` need an attestation. No simple-eng command writes them yet; record the implementation and the checks that ran in the DEC record instead.
 - `superseded` (`simple-eng add-decision --event superseded --id DEC-#### --superseded-by DEC-####`). Never rewrite an accepted decision; propose a new DEC that supersedes it, and keep the original rationale.
 
-`simple-eng` keeps each record's `Status:` line equal to its latest event, and `simple-eng validate` flags any mismatch. The event format is `${CLAUDE_PLUGIN_ROOT}/schemas/decision-event.schema.json`.
+`simple-eng` keeps each record's `Status:` line equal to its latest event, and `simple-eng validate` flags any mismatch. The event format is `${CLAUDE_PLUGIN_ROOT}/reference/decision-event.schema.json`.
 
 ## Limits
 

@@ -20,13 +20,13 @@ Use C4 at the levels that help:
 - **Component**: internal responsibilities and dependencies, only when it clarifies a real design or change.
 - Code-level detail only when the implementation complexity justifies it.
 
-Document trust boundaries, important data flows, integration contracts, failure modes, and deployment topology where relevant. Use Mermaid only when it communicates more clearly than prose and matches the implementation. Record the result in `docs/architecture/overview.md`, using `${CLAUDE_PLUGIN_ROOT}/templates/architecture.md`.
+Document trust boundaries, important data flows, integration contracts, failure modes, and deployment topology where relevant. Use Mermaid only when it communicates more clearly than prose and matches the implementation. Record the result in `docs/architecture/overview.md`, using `${CLAUDE_PLUGIN_ROOT}/reference/templates/architecture.md`.
 
 ## Evaluate choices
 
-Follow `${CLAUDE_PLUGIN_ROOT}/rubrics/technology-selection.md`, and check priorities against `${CLAUDE_PLUGIN_ROOT}/rubrics/quality-attributes.md`. Prefer the existing technologies unless evidence justifies a change. Do not introduce a service, abstraction, or dependency without a requirement.
+Follow `${CLAUDE_PLUGIN_ROOT}/reference/rubrics/technology-selection.md`, and check priorities against `${CLAUDE_PLUGIN_ROOT}/reference/rubrics/quality-attributes.md`. Prefer the existing technologies unless evidence justifies a change. Do not introduce a service, abstraction, or dependency without a requirement.
 
-Propose each consequential choice as a DEC (`${CLAUDE_PLUGIN_ROOT}/policies/decisions.md`) with alternatives, evidence, and consequences. Ask the decision owner to type `/simple-eng:approve DEC-####`; until they do, the choice stays proposed. Where a choice also shapes data or security boundaries, assess checkpoint D as well as C.
+Propose each consequential choice as a DEC (`${CLAUDE_PLUGIN_ROOT}/reference/policies/decisions.md`) with alternatives, evidence, and consequences. Ask the decision owner to type `/simple-eng:approve DEC-####`; until they do, the choice stays proposed. Where a choice also shapes data or security boundaries, assess checkpoint D as well as C.
 
 ## Verify and maintain
 

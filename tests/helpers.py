@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-PLUGIN = Path(__file__).resolve().parents[1]
+PLUGIN = Path(__file__).resolve().parents[1] / 'plugin'
 sys.path.insert(0, str(PLUGIN / 'lib'))
 
 from simple_eng import records, scaffold  # noqa: E402

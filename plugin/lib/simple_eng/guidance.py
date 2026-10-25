@@ -17,7 +17,7 @@ LOAD_BUDGET = 12000               # one workflow skill plus the guidance it read
 PLUGIN_REF = re.compile(r'\$\{CLAUDE_PLUGIN_ROOT\}/([\w./-]+)')
 SKILL_REF = re.compile(r'\$\{CLAUDE_SKILL_DIR\}/([\w./-]+)')
 LINK = re.compile(r'\]\((?!https?://|#|mailto:)([^)#\s]+)')
-GUIDANCE_DIRS = ('policies', 'rubrics')
+GUIDANCE_DIRS = ('reference/policies', 'reference/rubrics')
 
 
 def skills(plugin_root=PLUGIN_ROOT):
@@ -41,7 +41,7 @@ def _guidance_refs(path, plugin_root):
     out = []
     for ref in _refs(path, plugin_root):
         ref = ref.resolve()
-        if ref.is_file() and ref.suffix == '.md' and ref.relative_to(root).parts[0] in GUIDANCE_DIRS:
+        if ref.is_file() and ref.suffix == '.md' and ref.relative_to(root).parent.as_posix() in GUIDANCE_DIRS:
             out.append(ref)
     return out
 
@@ -69,7 +69,7 @@ def check_plugin(plugin_root=PLUGIN_ROOT):
         errors.append('project-map.json: duplicate area ids')
     for area in load_map(root):
         path, heading = split_record(area['record'])
-        template = root / 'templates' / area.get('template', '')
+        template = root / 'reference' / 'templates' / area.get('template', '')
         if area['source'] not in ('ask', 'investigate'):
             errors.append(f'project-map.json {area["id"]}: source must be ask or investigate')
         if not path.startswith('docs/') or not heading:
@@ -77,7 +77,7 @@ def check_plugin(plugin_root=PLUGIN_ROOT):
         if not template.is_file():
             errors.append(f'project-map.json {area["id"]}: template {area.get("template")} not found')
         elif heading.lower() not in (h.lower() for h in headings(template.read_text(encoding='utf-8'))):
-            errors.append(f'project-map.json {area["id"]}: heading "{heading}" not in templates/{area["template"]}')
+            errors.append(f'project-map.json {area["id"]}: heading "{heading}" not in reference/templates/{area["template"]}')
     found = skills(root)
     if not found:
         errors.append('no skills found under skills/')
@@ -97,13 +97,13 @@ def check_plugin(plugin_root=PLUGIN_ROOT):
         for need in meta.get('needs', []):
             if need not in area_ids:
                 errors.append(f'{where}: needs unknown area {need!r}')
-    for path in sorted([*root.glob('skills/**/*.md'), *root.glob('policies/*.md'), *root.glob('rubrics/*.md')]):
+    for path in sorted([*root.glob('skills/**/*.md'), *root.glob('reference/policies/*.md'), *root.glob('reference/rubrics/*.md')]):
         for ref in _refs(path, root):
             if not ref.exists():
                 errors.append(f'{path.relative_to(root)}: reference to missing file {ref}')
-    block = (root / 'templates/claude-md-block.md').stat().st_size
+    block = (root / 'reference/templates/claude-md-block.md').stat().st_size
     if block > BLOCK_BUDGET:
-        errors.append(f'templates/claude-md-block.md is {block} bytes (budget {BLOCK_BUDGET})')
+        errors.append(f'reference/templates/claude-md-block.md is {block} bytes (budget {BLOCK_BUDGET})')
     if descriptions > DESCRIPTIONS_BUDGET:
         errors.append(f'model-invocable skill descriptions total {descriptions} characters (budget {DESCRIPTIONS_BUDGET})')
     for name, rows in load_sets(root).items():
@@ -125,7 +125,7 @@ def budget_report(plugin_root=PLUGIN_ROOT):
     found = skills(root)
     always = sum(len(str(s['meta'].get('description', ''))) for s in found.values() if not s['meta'].get('disable-model-invocation'))
     lines = ['Estimated tokens (bytes / 4):',
-             f'- always loaded: CLAUDE.md block {(root / "templates/claude-md-block.md").stat().st_size // 4}, '
+             f'- always loaded: CLAUDE.md block {(root / "reference/templates/claude-md-block.md").stat().st_size // 4}, '
              f'skill descriptions {always // 4}, SessionStart context up to {6000 // 4} (hard cap {9000 // 4})']
     for name, rows in load_sets(root).items():
         lines.append(f'- {name}: ' + ', '.join(f'{part} {size // 4}' for part, size in rows))

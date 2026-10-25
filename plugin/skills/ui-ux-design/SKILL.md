@@ -15,7 +15,7 @@ For each relevant journey, describe entry points, transitions, user actions, val
 
 ## Design and implement
 
-Prefer existing components, tokens, and patterns, and add a new pattern only for an identified need. Make wireframes, mockups, or prototypes only when they reduce real uncertainty. Record consequential design trade-offs as DECs (`${CLAUDE_PLUGIN_ROOT}/policies/decisions.md`) linked to requirements, and keep notes in `docs/design/notes.md` (`${CLAUDE_PLUGIN_ROOT}/templates/design-notes.md`) when they will be reused.
+Prefer existing components, tokens, and patterns, and add a new pattern only for an identified need. Make wireframes, mockups, or prototypes only when they reduce real uncertainty. Record consequential design trade-offs as DECs (`${CLAUDE_PLUGIN_ROOT}/reference/policies/decisions.md`) linked to requirements, and keep notes in `docs/design/notes.md` (`${CLAUDE_PLUGIN_ROOT}/reference/templates/design-notes.md`) when they will be reused.
 
 ## Verify
 

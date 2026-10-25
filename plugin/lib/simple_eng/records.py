@@ -290,7 +290,7 @@ def add_decision(root, *, decision_id=None, event='proposed', title='', summary=
     _append(root, record)
     path = root / DECISIONS / f'{decision_id}.md'
     if event == 'proposed' and not path.exists():
-        template = (PLUGIN_ROOT / 'templates/decision-record.md').read_text(encoding='utf-8')
+        template = (PLUGIN_ROOT / 'reference/templates/decision-record.md').read_text(encoding='utf-8')
         text = template.replace('DEC-XXXX: <title>', f'{decision_id}: {_clean(title)}', 1)
         text = text.replace('- Date:', f'- Date: {record["timestamp"][:10]}', 1)
         if evidence:

@@ -16,7 +16,7 @@ class PluginStructureTests(unittest.TestCase):
 
     def test_manifests(self):
         manifest = json.loads((PLUGIN / '.claude-plugin/plugin.json').read_text())
-        market = json.loads((PLUGIN / '.claude-plugin/marketplace.json').read_text())
+        market = json.loads((PLUGIN.parent / '.claude-plugin/marketplace.json').read_text())
         self.assertEqual(manifest['name'], 'simple-eng')
         self.assertRegex(manifest['version'], r'^\d+\.\d+\.\d+$')
         self.assertEqual(market['plugins'][0]['name'], manifest['name'])
@@ -41,11 +41,11 @@ class PluginStructureTests(unittest.TestCase):
     def test_consequential_list_stated_once(self):
         holders = [p.relative_to(PLUGIN).as_posix() for p in PLUGIN.glob('**/*.md')
                    if 'tests' not in p.parts and CONSEQUENTIAL in p.read_text()]
-        self.assertEqual(holders, ['templates/claude-md-block.md'])
+        self.assertEqual(holders, ['reference/templates/claude-md-block.md'])
 
     def test_claim_labels_agree(self):
-        block = (PLUGIN / 'templates/claude-md-block.md').read_text()
-        policy = (PLUGIN / 'policies/evidence.md').read_text()
+        block = (PLUGIN / 'reference/templates/claude-md-block.md').read_text()
+        policy = (PLUGIN / 'reference/policies/evidence.md').read_text()
         policy_labels = tuple(re.findall(r'^- \*\*([a-z-]+)\*\*:', policy, re.MULTILINE))
         self.assertEqual(policy_labels, records.CLASSIFICATIONS)
         for label in records.CLASSIFICATIONS:
@@ -53,7 +53,7 @@ class PluginStructureTests(unittest.TestCase):
 
     def test_checkpoints_present(self):
         skill = (PLUGIN / 'skills/checkpoints/SKILL.md').read_text()
-        state = (PLUGIN / 'templates/state.md').read_text()
+        state = (PLUGIN / 'reference/templates/state.md').read_text()
         for letter in 'ABCDEFG':
             self.assertIn(f'**{letter} —', skill)
             self.assertIn(f'| {letter} —', state)
@@ -66,11 +66,11 @@ class PluginStructureTests(unittest.TestCase):
             self.assertTrue((PLUGIN / 'skills/initialize-project' / name).is_file(), name)
 
     def test_block_and_state_template_have_no_real_ids(self):
-        for rel in ('templates/claude-md-block.md', 'templates/state.md', 'templates/requirements.md'):
+        for rel in ('reference/templates/claude-md-block.md', 'reference/templates/state.md', 'reference/templates/requirements.md'):
             self.assertEqual(records.ANY_ID.findall((PLUGIN / rel).read_text()), [], rel)
 
     def test_event_schema_matches_validator(self):
-        schema = json.loads((PLUGIN / 'schemas/decision-event.schema.json').read_text())
+        schema = json.loads((PLUGIN / 'reference/decision-event.schema.json').read_text())
         self.assertEqual(set(schema['properties']), records.FIELDS)
         self.assertEqual(set(schema['required']), records.REQUIRED)
         self.assertEqual(tuple(schema['properties']['event']['enum']), records.EVENTS)
@@ -87,8 +87,8 @@ class BrokenPluginTests(unittest.TestCase):
             'unknown area': ('skills/status/SKILL.md', lambda t: t.replace('description:', 'needs: [nope]\ndescription:', 1), 'unknown area'),
             'missing reference': ('skills/maintain-project/SKILL.md', lambda t: t + '\nSee ${CLAUDE_PLUGIN_ROOT}/policies/gone.md\n', 'missing file'),
             'long description': ('skills/status/SKILL.md', lambda t: t.replace('description: ', 'description: ' + 'x' * 1600, 1), 'limit 1536'),
-            'over budget': ('policies/evidence.md', lambda t: t + 'y' * 13000, 'budget'),
-            'map heading': ('templates/project.md', lambda t: t.replace('## Stack', '## Tech'), 'heading "Stack"'),
+            'over budget': ('reference/policies/evidence.md', lambda t: t + 'y' * 13000, 'budget'),
+            'map heading': ('reference/templates/project.md', lambda t: t.replace('## Stack', '## Tech'), 'heading "Stack"'),
         }
         for label, (rel, change, expected) in breakages.items():
             with self.subTest(label):

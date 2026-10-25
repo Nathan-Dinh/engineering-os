@@ -111,15 +111,29 @@ simple-eng init [--apply]                  what /simple-eng:init runs
 
 ## Developing
 
-```bash
-python3 -m unittest discover -s tests -v   # unit, fixture, and end-to-end CLI tests
-python3 bin/simple-eng validate --plugin          # skill frontmatter, references, project map, token budgets
-python3 bin/simple-eng budget                     # estimated tokens per workflow
-claude plugin validate . --strict          # Claude Code's own manifest checks
-claude --plugin-dir .                      # try the plugin locally without installing
+```text
+.claude-plugin/marketplace.json   the marketplace; points at ./plugin
+plugin/                           everything that installs (only this folder is copied to users)
+├── .claude-plugin/plugin.json    name and version
+├── skills/                       workflow and command skills
+├── hooks/hooks.json              session start, approval capture, log guard
+├── bin/simple-eng                command-line entry point, on Claude's PATH
+├── lib/simple_eng/               the code behind bin/ and the hooks
+└── reference/                    files skills read on demand: policies, rubrics, templates,
+                                  project-map.json, decision-event.schema.json
+tests/                            maintainer tests; not installed
 ```
 
-To release, bump `version` in `.claude-plugin/plugin.json`. Installed copies stay on their version until it changes.
+```bash
+python3 -m unittest discover -s tests -v          # unit, fixture, and end-to-end CLI tests
+python3 plugin/bin/simple-eng validate --plugin   # skill frontmatter, references, project map, token budgets
+python3 plugin/bin/simple-eng budget              # estimated tokens per workflow
+claude plugin validate . --strict                 # marketplace manifest
+claude plugin validate ./plugin --strict          # plugin manifest and components
+claude --plugin-dir ./plugin                      # try the plugin locally without installing
+```
+
+To release, bump `version` in `plugin/.claude-plugin/plugin.json`. Installed copies stay on their version until it changes.
 
 The tests check code and guidance structure. They don't run an agent or prove how a conversation will go.
 

@@ -11,7 +11,7 @@ Inspect the affected code, tests, docs, architecture boundaries, dependency poli
 
 ## Assess impact
 
-Identify the affected users, data, and components, compatibility and migration effects, reversibility, deployment and operations, privacy and security, and cost. Check for conflicts with accepted DECs or docs, and do not resolve consequential conflicts silently. If an accepted decision must change, propose a superseding DEC (`${CLAUDE_PLUGIN_ROOT}/policies/decisions.md`).
+Identify the affected users, data, and components, compatibility and migration effects, reversibility, deployment and operations, privacy and security, and cost. Check for conflicts with accepted DECs or docs, and do not resolve consequential conflicts silently. If an accepted decision must change, propose a superseding DEC (`${CLAUDE_PLUGIN_ROOT}/reference/policies/decisions.md`).
 
 ## Change and verify
 
