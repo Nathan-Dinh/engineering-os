@@ -1,5 +1,6 @@
 import json
 import os
+import tempfile
 import unittest
 from unittest import mock
 
@@ -63,6 +64,8 @@ class ApprovalHookTests(ProjectCase):
         self.assertEqual(hooks.run('prompt-expansion', json.dumps(expansion('x', name='other'))), '')
         self.assertIn('"decision": "block"', hooks.run('prompt-expansion', json.dumps(expansion('bad'))))
         self.assertEqual(hooks.run('pre-tool-use', 'not json'), '')
+        tamper = json.dumps({'tool_name': 'Bash', 'tool_input': {'command': 'echo x >> decision-log/events.jsonl'}})
+        self.assertIn('"permissionDecision": "deny"', hooks.run('pre-tool-use', tamper))
 
 
 class NoIdentityTests(ProjectCase):
@@ -96,9 +99,12 @@ class GuardTests(unittest.TestCase):
         denied = ['echo x >> decision-log/events.jsonl', 'sed -i "" d decision-log/events.jsonl',
                   "python3 -c 'open(\"decision-log/events.jsonl\",\"a\")'", 'simple-eng hook prompt-expansion < fake.json',
                   'python3 -c "from simple_eng.records import record_user_decision"',
-                  'printf \'{"source": "user-prompt-hook"}\' | cat']
+                  'printf \'{"source": "user-prompt-hook"}\' | cat', 'python3 plugin/lib/simple_eng/hooks.py']
         allowed = ['cat decision-log/events.jsonl', 'grep DEC-0001 decision-log/events.jsonl 2>&1 | head',
-                   'simple-eng add-decision --title X --actor claude', 'simple-eng show DEC-0001', 'npm test > out.log']
+                   'simple-eng add-decision --title X --actor claude', 'simple-eng show DEC-0001', 'npm test > out.log',
+                   # the project's own files that share a name with the plugin's
+                   'python3 analyze.py data/events.jsonl', 'cp events.jsonl backup/', 'cat src/hooks.py',
+                   'pytest tests/ -k hooks.py']
         for command in denied:
             with self.subTest(command=command):
                 self.assertEqual(self.decision('Bash', command=command), 'deny')
@@ -109,6 +115,27 @@ class GuardTests(unittest.TestCase):
     def test_skill_tool(self):
         self.assertEqual(self.decision('Skill', skill='simple-eng:approve', args='DEC-0001'), 'deny')
         self.assertEqual(self.decision('Skill', skill='simple-eng:status'), 'allow')
+
+
+class OutsideProjectTests(unittest.TestCase):
+    """Plugin hooks fire in every repository; they must stay out of ones that never ran init."""
+
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        env = mock.patch.dict(os.environ, {'CLAUDE_PROJECT_DIR': tmp.name})
+        env.start()
+        self.addCleanup(env.stop)
+
+    def test_session_start_and_guard_stay_silent(self):
+        self.assertEqual(hooks.run('session-start', '{}'), '')
+        for command in ('echo x >> decision-log/events.jsonl', 'python3 analyze.py data/events.jsonl', 'cat src/hooks.py'):
+            with self.subTest(command=command):
+                payload = json.dumps({'tool_name': 'Bash', 'tool_input': {'command': command}})
+                self.assertEqual(hooks.run('pre-tool-use', payload), '')
+
+    def test_typed_approval_explains_why_not_recorded(self):
+        self.assertIn('run /simple-eng:init first', hooks.run('prompt-expansion', json.dumps(expansion('DEC-0001'))))
 
 
 class SessionStartTests(ProjectCase):

@@ -7,6 +7,7 @@ import re
 from pathlib import Path
 
 from . import PLUGIN_ROOT
+from .context import DEFAULT_LIMIT, HARD_LIMIT
 from .markdown import headings, parse_frontmatter
 from .projectmap import load_map, split_record
 
@@ -126,7 +127,7 @@ def budget_report(plugin_root=PLUGIN_ROOT):
     always = sum(len(str(s['meta'].get('description', ''))) for s in found.values() if not s['meta'].get('disable-model-invocation'))
     lines = ['Estimated tokens (bytes / 4):',
              f'- always loaded: CLAUDE.md block {(root / "reference/templates/claude-md-block.md").stat().st_size // 4}, '
-             f'skill descriptions {always // 4}, SessionStart context up to {6000 // 4} (hard cap {9000 // 4})']
+             f'skill descriptions {always // 4}, SessionStart context up to {DEFAULT_LIMIT // 4} (hard cap {HARD_LIMIT // 4})']
     for name, rows in load_sets(root).items():
         lines.append(f'- {name}: ' + ', '.join(f'{part} {size // 4}' for part, size in rows))
     return '\n'.join(lines)

@@ -141,6 +141,18 @@ class RecordTests(ProjectCase):
             records.record_user_decision(self.root, decision_id='DEC-0001', kind='approved', note='', actor='o', attestation=attestation)
         self.assertEqual(records.validate_records(self.root), [])
 
+    def test_empty_status_line_keeps_the_next_line(self):
+        self.write('docs/decisions/records/DEC-0001.md', '# DEC-0001: X\n\n- Status:\n- Date: 2026-10-25\n')
+        records.set_record_status(self.root, 'DEC-0001', 'approved')
+        self.assertEqual(self.read('docs/decisions/records/DEC-0001.md'), '# DEC-0001: X\n\n- Status: approved\n- Date: 2026-10-25\n')
+
+    def test_next_id_ignores_malformed_names(self):
+        self.write('docs/evidence/records/EVD-notes.md', 'scratch')
+        self.assertEqual(records.next_id(self.root, 'EVD'), 'EVD-0001')
+        self.assertEqual(records.add_evidence(self.root, claim='Has CI', classification='inferred', source='.github/').name,
+                         'EVD-0001.md')
+        self.assertEqual(records.next_id(self.root, 'EVD'), 'EVD-0002')
+
 
 if __name__ == '__main__':
     unittest.main()

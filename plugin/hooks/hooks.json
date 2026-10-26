@@ -18,8 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3",
-            "args": ["${CLAUDE_PLUGIN_ROOT}/bin/simple-eng", "hook", "prompt-expansion"],
+            "command": "command -v python3 >/dev/null 2>&1 || exit 0; python3 \"${CLAUDE_PLUGIN_ROOT}/bin/simple-eng\" hook prompt-expansion",
             "timeout": 20
           }
         ]
@@ -31,8 +30,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3",
-            "args": ["${CLAUDE_PLUGIN_ROOT}/bin/simple-eng", "hook", "pre-tool-use"],
+            "command": "command -v python3 >/dev/null 2>&1 || exit 0; python3 \"${CLAUDE_PLUGIN_ROOT}/bin/simple-eng\" hook pre-tool-use",
             "timeout": 10
           }
         ]

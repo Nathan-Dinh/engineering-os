@@ -34,7 +34,8 @@ DEFINITION_SITES = (
     re.compile(r'^\s*#{1,6}\s+((?:REQ|QA|FEAT|TEST)-\d{4,})\b'),         # heading
     re.compile(r'^\s*[-*]\s*ID:\s*((?:REQ|QA|FEAT|TEST)-\d{4,})\b', re.IGNORECASE),
 )
-STATUS_LINE = re.compile(r'^(\s*[-*]\s*Status:\s*)(\S*)(.*)$', re.MULTILINE)
+# [ \t] rather than \s, so an empty `- Status:` line never reaches into the line below it.
+STATUS_LINE = re.compile(r'^([ \t]*[-*][ \t]*Status:[ \t]*)(\S*)(.*)$', re.MULTILINE)
 
 # What each event may follow. None means "first event for the decision".
 ALLOWED_AFTER = {
@@ -180,7 +181,8 @@ def scan_ids(root, extra_files=()):
     evidence_dir = root / EVIDENCE
     if evidence_dir.is_dir():
         for path in sorted(evidence_dir.glob('EVD-*.md')):
-            definitions.setdefault(path.stem, []).append(str(path.relative_to(root)))
+            if EVD_ID.match(path.stem):
+                definitions.setdefault(path.stem, []).append(str(path.relative_to(root)))
     for path in _markdown_files(root, extra_files):
         rel = str(path.relative_to(root))
         own = path.stem if path.parent in (root / DECISIONS, evidence_dir) else None
@@ -248,7 +250,7 @@ def set_record_status(root, decision_id, status):
         return False
     text = path.read_text(encoding='utf-8')
     if STATUS_LINE.search(text):
-        text = STATUS_LINE.sub(lambda m: f'{m.group(1)}{status}', text, count=1)
+        text = STATUS_LINE.sub(lambda m: f'{m.group(1).rstrip()} {status}', text, count=1)
     else:
         lines = text.split('\n', 1)
         text = lines[0] + f'\n\n- Status: {status}\n' + (lines[1] if len(lines) > 1 else '')
@@ -257,9 +259,9 @@ def set_record_status(root, decision_id, status):
 
 
 def next_id(root, prefix):
-    numbers = [int(i.split('-')[1]) for i in scan_ids(root)[0] if i.startswith(prefix + '-')]
-    if prefix == 'EVD' and (Path(root) / EVIDENCE).is_dir():
-        numbers += [int(p.stem.split('-')[1]) for p in (Path(root) / EVIDENCE).glob('EVD-*.md')]
+    # Only well-formed IDs count: a hand-edited log or a file like EVD-notes.md must not crash numbering.
+    pattern = re.compile(rf'^{prefix}-(\d+)$')
+    numbers = [int(m.group(1)) for m in map(pattern.match, map(str, scan_ids(root)[0])) if m]
     return f'{prefix}-{max(numbers, default=0) + 1:04d}'
 
 

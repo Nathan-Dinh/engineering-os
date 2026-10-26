@@ -60,6 +60,15 @@ class ContextTests(ProjectCase):
         self.assertIn('REQ-0404 is referenced but never defined', out)
         self.assertIn('initialized with simple-eng 0.0.1', out)
 
+    def test_long_pending_backlog_leaves_room_for_state(self):
+        self.write('docs/STATE.md', '# State\n\n## Current focus\n\n' + 'Working on the payment flow.\n' * 40)
+        for i in range(60):
+            self.propose(title=f'Decision number {i} with a reasonably long title')
+        out = context.build_context(self.root)
+        self.assertIn('and 50 more in docs/decisions/records/', out)
+        state = out.split('--- docs/STATE.md ---')[1].split('--- docs/PROJECT.md ---')[0]
+        self.assertGreater(len(state), 1000)
+
 
 if __name__ == '__main__':
     unittest.main()

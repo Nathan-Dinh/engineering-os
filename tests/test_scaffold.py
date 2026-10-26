@@ -46,6 +46,19 @@ class ScaffoldTests(unittest.TestCase):
         self.assertNotIn('old rules', text)
         self.assertEqual((self.root / 'docs/PROJECT.md').read_text(), '# Mine\n')
 
+    def test_missing_end_marker_refuses_instead_of_adding_a_second_block(self):
+        (self.root / 'CLAUDE.md').write_text('Intro\n\n<!-- simple-eng:start version=0.0.1 -->\nold rules\n')
+        with self.assertRaisesRegex(ValueError, 'no end marker'):
+            scaffold.planned_changes(self.root)
+
+    def test_malformed_config_is_a_clear_error(self):
+        (self.root / '.simple-eng').mkdir()
+        for text in ('[]', '{"areas": []}'):
+            with self.subTest(config=text):
+                (self.root / '.simple-eng/config.json').write_text(text)
+                with self.assertRaisesRegex(ValueError, 'config.json'):
+                    scaffold.planned_changes(self.root)
+
 
 if __name__ == '__main__':
     unittest.main()

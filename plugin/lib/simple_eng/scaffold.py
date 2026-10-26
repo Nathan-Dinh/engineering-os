@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 from . import PLUGIN_ROOT, plugin_version
-from .paths import CONFIG, PROJECT, STATE
+from .paths import CONFIG, PROJECT, STATE, load_config
 
 START = '<!-- simple-eng:start version={version} -->'
 END = '<!-- simple-eng:end -->'
@@ -23,6 +23,9 @@ def _with_block(existing, block):
         return block + '\n'
     if BLOCK.search(existing):
         return BLOCK.sub(lambda _: block, existing, count=1)
+    if '<!-- simple-eng:start' in existing:
+        raise ValueError('CLAUDE.md has a simple-eng start marker but no end marker; restore '
+                         f'"{END}" after the block (or delete the partial block), then run init again')
     return existing.rstrip('\n') + ('\n\n' if existing.strip() else '') + block + '\n'
 
 
@@ -40,8 +43,7 @@ def planned_changes(root, plugin_root=PLUGIN_ROOT):
                                             fromfile=f'a/{rel}' if old is not None else '/dev/null', tofile=f'b/{rel}'))
         changes.append({'path': rel, 'action': 'update' if old is not None else 'create', 'content': new, 'diff': diff})
 
-    config_path = root / CONFIG
-    config = json.loads(config_path.read_text(encoding='utf-8')) if config_path.is_file() else {}
+    config = load_config(root)
     config.setdefault('initialized', dt.date.today().isoformat())
     config['framework_version'] = plugin_version(plugin_root)
     config.setdefault('areas', {})

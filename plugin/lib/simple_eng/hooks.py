@@ -4,6 +4,8 @@
 - prompt-expansion: records approve/reject events from a slash command the user typed.
   UserPromptExpansion fires only for user-typed commands, not when Claude invokes a skill.
 - pre-tool-use: denies direct writes to the decision log and attempts to impersonate the approval hook.
+
+Plugin hooks fire in every repository where the plugin is enabled, so `run` skips projects that never ran init.
 """
 import hashlib
 import json
@@ -18,7 +20,7 @@ from .records import DEC_ID, record_user_decision
 COMMAND = re.compile(r'^(?:simple-eng:)?(approve|reject)$')
 LOG_NAME = 'decision-log/events.jsonl'
 FILE_TOOLS = ('Edit', 'Write', 'MultiEdit', 'NotebookEdit')
-IMPERSONATION = re.compile(r'record_user_decision|user-prompt-hook|UserPromptExpansion;|(^|[\s/;&|])simple-eng\s+hook\b|\bhooks\.py\b')
+IMPERSONATION = re.compile(r'record_user_decision|user-prompt-hook|UserPromptExpansion;|(^|[\s/;&|])simple-eng\s+hook\b|\bsimple_eng/hooks\.py\b')
 WRITES = re.compile(r'>|\btee\b|\bsed\b[^|;&]*\s-i|\bperl\b[^|;&]*\s-i|\btruncate\b|\brm\b|\bmv\b|\bcp\b|\bdd\b|'
                     r'\bpython3?\b|\bnode\b|\bruby\b|\bgit\s+(checkout|restore|reset|rm)\b')
 FD_REDIRECT = re.compile(r'\d?>&\d|&>\s*/dev/null|\d?>\s*/dev/null')
@@ -89,7 +91,8 @@ def _deny(reason):
 
 def pre_tool_use(payload):
     tool = payload.get('tool_name', '')
-    data = payload.get('tool_input') or {}
+    data = payload.get('tool_input')
+    data = data if isinstance(data, dict) else {}
     if tool in FILE_TOOLS:
         path = str(data.get('file_path') or data.get('notebook_path') or '').replace('\\', '/')
         if path == LOG_NAME or path.endswith('/' + LOG_NAME):
@@ -100,7 +103,7 @@ def pre_tool_use(payload):
         if IMPERSONATION.search(command):
             return _deny('Approval events are recorded only by the simple-eng hook from a command the decision owner types. '
                          'Ask the user to type /simple-eng:approve DEC-#### themselves.')
-        if 'events.jsonl' in command and WRITES.search(FD_REDIRECT.sub('', command)):
+        if LOG_NAME in command and WRITES.search(FD_REDIRECT.sub('', command)):
             return _deny(f'Direct writes to {LOG_NAME} are blocked. Use `simple-eng add-decision` for proposals; reading the file is fine.')
     elif tool == 'Skill':
         name = str(data.get('skill') or data.get('name') or data.get('command') or '')
@@ -110,6 +113,8 @@ def pre_tool_use(payload):
 
 
 HANDLERS = {'session-start': session_start, 'prompt-expansion': prompt_expansion, 'pre-tool-use': pre_tool_use}
+# Runs outside a simple-eng project too, so a typed /simple-eng:approve there is told why nothing was recorded.
+ALWAYS_RUN = ('prompt-expansion',)
 
 
 def run(name, stdin):
@@ -117,7 +122,10 @@ def run(name, stdin):
         payload = json.loads(stdin or '{}')
     except ValueError:
         payload = {}
-    result = HANDLERS[name](payload if isinstance(payload, dict) else {})
+    payload = payload if isinstance(payload, dict) else {}
+    if name not in ALWAYS_RUN and not is_initialized(_root(payload)):
+        return ''
+    result = HANDLERS[name](payload)
     if result is None:
         return ''
     return result if isinstance(result, str) else json.dumps(result)
