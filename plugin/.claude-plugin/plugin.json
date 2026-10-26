@@ -1,7 +1,7 @@
 {
   "name": "simple-eng",
   "displayName": "simple-eng",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Engineering lifecycle workflows with durable project state: discovery, decisions with typed approvals, evidence, and traceability that survive compaction and new sessions.",
   "author": {
     "name": "Nathan Dinh"
