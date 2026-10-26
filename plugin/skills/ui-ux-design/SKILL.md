@@ -15,11 +15,11 @@ For each relevant journey, describe entry points, transitions, user actions, val
 
 ## Design and implement
 
-Prefer existing components, tokens, and patterns, and add a new pattern only for an identified need. Make wireframes, mockups, or prototypes only when they reduce real uncertainty. Record consequential design trade-offs as DECs (`${CLAUDE_PLUGIN_ROOT}/reference/policies/decisions.md`) linked to requirements, and keep notes in `docs/design/notes.md` (`${CLAUDE_PLUGIN_ROOT}/reference/templates/design-notes.md`) when they will be reused.
+Prefer existing components, tokens, and patterns, and add a new pattern only for an identified need. Check layout, choices, and feedback against `${CLAUDE_PLUGIN_ROOT}/reference/rubrics/ux-principles.md`, and name the principle behind each consequential choice. Make wireframes, mockups, or prototypes only when they reduce real uncertainty. Record consequential design trade-offs as DECs (`${CLAUDE_PLUGIN_ROOT}/reference/policies/decisions.md`) linked to requirements, and keep notes in `docs/design/notes.md` (`${CLAUDE_PLUGIN_ROOT}/reference/templates/design-notes.md`) when they will be reused.
 
 ## Verify
 
-Test the critical journeys and their interaction states at representative viewports. Use automated accessibility checks where available, plus manual keyboard and assistive-technology review when needed, and state the limits. An automated scan alone does not establish accessibility compliance.
+Test the critical journeys and their interaction states at representative viewports. Use automated accessibility checks where available, plus manual keyboard and assistive-technology review when needed, and state the limits. An automated scan alone does not establish accessibility compliance. When reviewing an existing interface, use the UX principles to find likely problems, and report them as inferred until a test or user feedback confirms them.
 
 ## Record and hand off
 
